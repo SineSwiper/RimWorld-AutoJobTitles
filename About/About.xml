@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+	<packageId>SineSwiper.AutoJobTitles</packageId>
+    <name>Automatic Job Titles</name>
+    <author>SineSwiper</author>
+    <url>https://github.com/SineSwiper/RimWorld-AutoJobTitles</url>
+    <supportedVersions>
+        <li>1.3</li>
+    </supportedVersions>
+	<loadAfter>
+		<li>Ludeon.RimWorld</li>
+		<li>Ludeon.RimWorld.Royalty</li>
+		<li>Ludeon.RimWorld.Ideology</li>
+    </loadAfter>
+<description>DEBUG</description>
+</ModMetaData>

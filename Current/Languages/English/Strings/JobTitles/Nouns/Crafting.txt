@@ -1,0 +1,6 @@
+crafter
+fletcher
+journeyman
+machinist
+mechanic
+metalsmith

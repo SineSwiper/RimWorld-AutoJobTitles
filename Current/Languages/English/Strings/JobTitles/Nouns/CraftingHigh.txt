@@ -1,0 +1,4 @@
+artisan
+inventor
+handicrafter
+blacksmith

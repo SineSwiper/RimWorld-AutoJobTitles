@@ -1,0 +1,9 @@
+gladiator
+champion
+boxer
+warrior
+berserker
+guardian
+protector
+destroyer
+knight

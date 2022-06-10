@@ -1,0 +1,3 @@
+bowman
+shooter
+lookout
