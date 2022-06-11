@@ -16,6 +16,9 @@
     <AJT_MinExpertSkillLevel_Title>Min expert skill level</AJT_MinExpertSkillLevel_Title>
     <AJT_MinExpertSkillLevel_Description>Minimum skill level for a pawn to be considered an "expert".  Expert-level skills are used for upgraded titles.</AJT_MinExpertSkillLevel_Description>
 
+    <AJT_ChangeJobTitlePriority_Title>Change job title priority</AJT_ChangeJobTitlePriority_Title>
+    <AJT_ChangeJobTitlePriority_Description>The priority in which pawns will think of a new job title.</AJT_ChangeJobTitlePriority_Description>
+
     <!-- Job -->
     <AJT_PawnGainsTitle>{0} was missing a job title for this colony, so {PAWN_pronoun} thought up a new one. {PAWN_possessive} title is now {PAWN_title}.</AJT_PawnGainsTitle>
 </LanguageData>

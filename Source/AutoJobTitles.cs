@@ -10,6 +10,13 @@ using Verse.Grammar;
 using UnityEngine;
 
 namespace AutoJobTitles {
+    public enum ChangeJobTitlePriority : int {
+        Top  = 1,
+        High,
+        Medium,
+        Low
+    };
+
     [StaticConstructorOnStartup]
     public class Base : ModBase {
         public override string ModIdentifier {
@@ -31,6 +38,13 @@ namespace AutoJobTitles {
 
         internal Dictionary<string, SettingHandle> config = new Dictionary<string, SettingHandle>();
 
+        public Dictionary<ChangeJobTitlePriority, string> ChangeJobTitlePriorityTag = new Dictionary<ChangeJobTitlePriority, string> {
+            { ChangeJobTitlePriority.Top,    "Humanlike_PostMentalState" },
+            { ChangeJobTitlePriority.High,   "Humanlike_PostDuty"        },
+            { ChangeJobTitlePriority.Medium, "Humanlike_PreMain"         },
+            { ChangeJobTitlePriority.Low,    "Humanlike_PostMain"        },
+        };
+
         // Please load Harmony stuff
         // (This is required for HugsLib.ModBase.ApplyHarmonyPatches)
         public override void DefsLoaded() {
@@ -39,6 +53,11 @@ namespace AutoJobTitles {
             // Cache these for later use
             TitleNamerDef = DefDatabase<RulePackDef>.GetNamed("AJT_Namer_JobTitle");
             PartsNamerDef = DefDatabase<RulePackDef>.GetNamed("AJT_Namer_JobTitleParts");
+
+            // Set the initial insertTag
+            ThinkTreeDefOf.AJT_ChangeJobTitle.insertTag = ChangeJobTitlePriorityTag[
+                ((SettingHandle<ChangeJobTitlePriority>)config["ChangeJobTitlePriority"]).Value
+            ];
         }
 
         public void ProcessSettings () {
@@ -60,6 +79,7 @@ namespace AutoJobTitles {
                 "MinSinglePassionSkillLevel",
                 "MinNoPassionSkillLevel",
                 "MinExpertSkillLevel",
+                "ChangeJobTitlePriority",
             };
             var iDefaults = new Dictionary<string, int> {
                 { "MinDoublePassionSkillLevel", 5  },
@@ -86,8 +106,28 @@ namespace AutoJobTitles {
                     );
                     config[sName].CustomDrawer = rect => {
                         return DrawUtility.CustomDrawer_Slider(
-                            rect, (SettingHandle<int>)config[sName], false, 0, 20, 1
+                            rect:    rect,
+                            setting: (SettingHandle<int>)config[sName],
+                            defMin:  0,
+                            defMax:  20
                         );
+                    };
+                }
+                else if (sName == "ChangeJobTitlePriority") {
+                    config[sName] = Settings.GetHandle<ChangeJobTitlePriority>(
+                        settingName:  sName,
+                        title:        ("AJT_" + sName + "_Title").Translate(),
+                        description:  ("AJT_" + sName + "_Description").Translate(),
+                        defaultValue: ChangeJobTitlePriority.Low
+                    );
+                    config[sName].CustomDrawer = rect => {
+                        return DrawUtility.CustomDrawer_Slider(
+                            rect:    rect,
+                            setting: (SettingHandle<ChangeJobTitlePriority>)config[sName]
+                        );
+                    };
+                    config[sName].ValueChanged += sh => {
+                        ThinkTreeDefOf.AJT_ChangeJobTitle.insertTag = ChangeJobTitlePriorityTag[ ((SettingHandle<ChangeJobTitlePriority>)sh).Value ];
                     };
                 }
                 else {
@@ -313,7 +353,7 @@ namespace AutoJobTitles {
     }
 
     public static class DrawUtility {
-        public static bool CustomDrawer_Slider(Rect rect, SettingHandle<int> slider, bool def_isPercentage, float def_min, float def_max, float roundTo = -1) {
+        public static bool CustomDrawer_Slider(Rect rect, SettingHandle<int> setting, int defMin = 0, int defMax = 20) {
             int labelWidth = 50;
 
             Rect sliderPortion = new Rect(rect);
@@ -326,25 +366,59 @@ namespace AutoJobTitles {
 
             sliderPortion = sliderPortion.ContractedBy(2f);
 
-            if (def_isPercentage)
-                Widgets.Label(labelPortion, (Mathf.Round(slider.Value * 100f)).ToString("F0") + "%");
-            else if (roundTo >= 1)
-                Widgets.Label(labelPortion, slider.Value.ToString("N0"));
-            else 
-                Widgets.Label(labelPortion, slider.Value.ToString("F2"));
+            Widgets.Label(labelPortion, setting.Value.ToString("N0"));
 
             int val = (int)Widgets.HorizontalSlider(
                 rect:       sliderPortion,
-                value:      slider.Value,
-                leftValue:  def_min,
-                rightValue: def_max,
+                value:      setting.Value,
+                leftValue:  defMin,
+                rightValue: defMax,
                 middleAlignment: true,
-                roundTo:    roundTo
+                roundTo:    1
             );
 
-            bool change = slider.Value != val;
-            slider.Value = val;
+            bool change = setting.Value != val;
+            setting.Value = val;
+            return change;
+        }
+        public static bool CustomDrawer_Slider<TEnum> (Rect rect, SettingHandle<TEnum> setting) where TEnum : Enum {
+            // XXX: These bits are ran every frame, so not ideal for large Enums without some caching in place
+
+            // Figure out some min/max values
+            List<string> strings = Enum.GetNames (typeof(TEnum)).Select(s => GenText.SplitCamelCase(s)).ToList();
+            List<int>     values = Enum.GetValues(typeof(TEnum)).Cast<TEnum>().Select(i => i.ChangeType<int>()).ToList();
+
+            int defMin       = values.Where(i => i > 0).Min();
+            int defMax       = values.Max();
+            float labelWidth = strings.Select(s => Text.CalcSize(s).x).Max() + 5;
+
+            Rect sliderPortion = new Rect(rect);
+            sliderPortion.width -= labelWidth;
+
+            Rect labelPortion = new Rect(rect) {
+                width    = labelWidth,
+                position = new Vector2(sliderPortion.position.x + sliderPortion.width + 5f, sliderPortion.position.y + 4f)
+            };
+
+            sliderPortion = sliderPortion.ContractedBy(2f);
+
+            Widgets.Label(labelPortion, GenText.SplitCamelCase(setting.Value.ToString()) );
+
+            int valNum = (int)Widgets.HorizontalSlider(
+                rect:       sliderPortion,
+                value:      setting.Value.ChangeType<int>(),
+                leftValue:  defMin,
+                rightValue: defMax,
+                middleAlignment: true,
+                roundTo:    1
+            );
+
+            TEnum val = (TEnum)Enum.Parse(typeof(TEnum), valNum.ToString());
+
+            bool change = setting.Value.ChangeType<int>() != valNum;
+            setting.Value = val;
             return change;
         }        
+
     }
 }
