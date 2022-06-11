@@ -1,15 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Defs>
-    <JobDef>
-        <defName>AJT_ChangingJobTitle</defName>
-        <driverClass>JobDriver_Wait</driverClass>
-        <reportString>thinking of a title.</reportString>
-        <isIdle>true</isIdle>
-        <allowOpportunisticPrefix>true</allowOpportunisticPrefix>
-        <carryThingAfterJob>true</carryThingAfterJob>
-        <dropThingBeforeJob>false</dropThingBeforeJob>
-    </JobDef>
-
 	<ThinkTreeDef>
 		<defName>AJT_ChangeJobTitle</defName>
 		<insertTag>Humanlike_PostMain</insertTag>
@@ -20,4 +10,14 @@
             </subNodes>
         </thinkRoot>
 	</ThinkTreeDef>
+
+    <JobDef>
+        <defName>AJT_ChangingJobTitle</defName>
+        <driverClass>AutoJobTitles.JobDriver_ChangeTitle</driverClass>
+        <reportString>thinking of a title.</reportString>
+        <isIdle>true</isIdle>
+        <allowOpportunisticPrefix>true</allowOpportunisticPrefix>
+        <carryThingAfterJob>true</carryThingAfterJob>
+        <dropThingBeforeJob>false</dropThingBeforeJob>
+    </JobDef>
 </Defs>

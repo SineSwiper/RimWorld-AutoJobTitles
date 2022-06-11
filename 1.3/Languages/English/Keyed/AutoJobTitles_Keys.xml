@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+    <!-- Settings -->
+    <AJT_FactorWorkSettings_Title>Factor work priority settings</AJT_FactorWorkSettings_Title>
+    <AJT_FactorWorkSettings_Description>Controls whether to look at work priority settings when determining skills worth checking as part of a job title.  Only the highest priority jobs are considered.</AJT_FactorWorkSettings_Description>
+
+    <AJT_MinDoublePassionSkillLevel_Title>Min double-passion skill level</AJT_MinDoublePassionSkillLevel_Title>
+    <AJT_MinDoublePassionSkillLevel_Description>Minimum skill level for a double-passion skill to be considered worthy enough as part of a job title.</AJT_MinDoublePassionSkillLevel_Description>
+
+    <AJT_MinSinglePassionSkillLevel_Title>Min single-passion skill level</AJT_MinSinglePassionSkillLevel_Title>
+    <AJT_MinSinglePassionSkillLevel_Description>Minimum skill level for a single-passion skill to be considered worthy enough as part of a job title.</AJT_MinSinglePassionSkillLevel_Description>
+
+    <AJT_MinNoPassionSkillLevel_Title>Min no-passion skill level</AJT_MinNoPassionSkillLevel_Title>
+    <AJT_MinNoPassionSkillLevel_Description>Minimum skill level for a no-passion skill to be considered worthy enough as part of a job title.</AJT_MinNoPassionSkillLevel_Description>
+
+    <AJT_MinExpertSkillLevel_Title>Min expert skill level</AJT_MinExpertSkillLevel_Title>
+    <AJT_MinExpertSkillLevel_Description>Minimum skill level for a pawn to be considered an "expert".  Expert-level skills are used for upgraded titles.</AJT_MinExpertSkillLevel_Description>
+
+    <!-- Job -->
+    <AJT_PawnGainsTitle>{0} was missing a job title for this colony, so {PAWN_pronoun} thought up a new one. {PAWN_possessive} title is now {PAWN_title}.</AJT_PawnGainsTitle>
+</LanguageData>
