@@ -7,6 +7,16 @@ using Verse.AI;
 
 // Job title job code (job job job)
 namespace AutoJobTitles {
+    [DefOf]
+    public static class ThinkTreeDefOf {
+        public static ThinkTreeDef AJT_ChangeJobTitle;
+    }
+
+    [DefOf]
+    public static class JobDefOf {
+        public static JobDef AJT_ChangingJobTitle;
+    }
+
     public class ThinkNode_ConditionalWantsTitleChange : ThinkNode_Conditional {
         protected override bool Satisfied (Pawn pawn) => pawn.IsFreeNonSlaveColonist && pawn.story != null && pawn.story.title.NullOrEmpty();
     }
@@ -15,7 +25,7 @@ namespace AutoJobTitles {
         protected override Job TryGiveJob (Pawn pawn) {
             if (pawn.story == null) return null;
 
-            Job newJob = JobMaker.MakeJob( DefDatabase<JobDef>.GetNamed("AJT_ChangingJobTitle") );
+            Job newJob = JobMaker.MakeJob(JobDefOf.AJT_ChangingJobTitle);
             newJob.expiryInterval = JobDriver_ChangeTitle.thinkingTotal * 2;
             return newJob;
         }

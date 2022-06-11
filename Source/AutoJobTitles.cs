@@ -10,6 +10,12 @@ using Verse.Grammar;
 using UnityEngine;
 
 namespace AutoJobTitles {
+    [DefOf]
+    public static class RulePackDefOf {
+        public static RulePackDef AJT_Namer_JobTitle;
+        public static RulePackDef AJT_Namer_JobTitleParts;
+    }
+
     public enum ChangeJobTitlePriority : int {
         Top  = 1,
         High,
@@ -24,9 +30,6 @@ namespace AutoJobTitles {
         }
         public static Base Instance { get; private set; }
         public static bool IsDebug  { get; private set; }
-        
-        public static RulePackDef TitleNamerDef { get; private set; }
-        public static RulePackDef PartsNamerDef { get; private set; }
 
         internal HugsLib.Utils.ModLogger ModLogger { get; private set; }
 
@@ -49,10 +52,6 @@ namespace AutoJobTitles {
         // (This is required for HugsLib.ModBase.ApplyHarmonyPatches)
         public override void DefsLoaded() {
             ProcessSettings();
-
-            // Cache these for later use
-            TitleNamerDef = DefDatabase<RulePackDef>.GetNamed("AJT_Namer_JobTitle");
-            PartsNamerDef = DefDatabase<RulePackDef>.GetNamed("AJT_Namer_JobTitleParts");
 
             // Set the initial insertTag
             ThinkTreeDefOf.AJT_ChangeJobTitle.insertTag = ChangeJobTitlePriorityTag[
@@ -236,7 +235,8 @@ namespace AutoJobTitles {
             // Special case for noskill
             if (count <= 0) {
                 GrammarRequest request = new GrammarRequest();
-                request.Includes .Add     ( TitleNamerDef );
+                request.Includes .Add     ( RulePackDefOf.AJT_Namer_JobTitle );
+                request.Includes .Add     ( RulePackDefOf.AJT_Namer_JobTitleParts );
                 request.Rules    .AddRange( requestTemplate.Rules );
                 request.Constants.AddRange( requestTemplate.Constants );
                 request.Constants.Add     ( "count", count.ToString() );
@@ -309,7 +309,7 @@ namespace AutoJobTitles {
             if (count <= 0 || count > 3) return null;  // no parts beyond 3 yet
 
             GrammarRequest request = new GrammarRequest();
-            request.Includes .Add     ( PartsNamerDef );
+            request.Includes .Add     ( RulePackDefOf.AJT_Namer_JobTitleParts );
             request.Rules    .AddRange( requestTemplate.Rules );
             request.Constants.AddRange( requestTemplate.Constants );
             request.Constants.AddRange( partSkillList.ToDictionary( keySelector: s => s,             elementSelector: s => "1" ) );
