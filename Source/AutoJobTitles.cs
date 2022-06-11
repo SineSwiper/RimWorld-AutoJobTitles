@@ -241,9 +241,6 @@ namespace AutoJobTitles {
                     request.Rules.Add(nounRule);
 
                     string title = GrammarResolver.Resolve(
-                        debugLabel: "TITLE",
-                        forceLog:   true,
-
                         request:     request,
                         rootKeyword: "r_title",
                         capitalizeFirstSentence: true
@@ -253,7 +250,7 @@ namespace AutoJobTitles {
                     // XXX: We don't actually know if a skill#_noun gave us a #-Skill noun
                     double weight = 1 + Math.Pow(adjSkills.Count, 1.5) + Math.Pow(nounSkills.Count, 1.75) + (title.Length / 20f);
 
-                    titles.Add( title, (float)weight );
+                    titles.SetOrAdd( title, (float)weight );
                 }
             }
 
@@ -350,34 +347,4 @@ namespace AutoJobTitles {
             return change;
         }        
     }
-
-    // Job title job code (job job job)
-    public class ThinkNode_ConditionalWantsTitleChange : ThinkNode_Conditional {
-        protected override bool Satisfied (Pawn pawn) => pawn.IsFreeNonSlaveColonist && pawn.story != null && pawn.story.title.NullOrEmpty();
-    }
-
-    public class JobGiver_ChangeJobTitle : ThinkNode_JobGiver {
-        protected override Job TryGiveJob (Pawn pawn) {
-            if (pawn.story == null) return null;
-
-            // Do the name change thing
-            string newTitle = Base.Instance.NewJobTitle(pawn);
-            if (newTitle == "") return null;
-            pawn.story.title = newTitle;
-
-            // Announce the change
-            Messages.Message(
-                // FIXME: Make our own translate text
-                text:        "PawnGainsName".Translate( pawn.Name.ToStringShort, pawn.story.Title, pawn.Named("PAWN") ).AdjustedFor(pawn),
-                lookTargets: pawn,
-                def:         MessageTypeDefOf.PositiveEvent,
-                historical:  false
-            );
-
-            Job newJob = JobMaker.MakeJob( DefDatabase<JobDef>.GetNamed("AJT_ChangingJobTitle") );
-            newJob.expiryInterval = 30;  // half-a-second
-            return newJob;
-        }
-    }
-
 }
