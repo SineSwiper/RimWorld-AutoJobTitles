@@ -232,65 +232,69 @@ namespace AutoJobTitles {
                 if (count >= 5) break;
             }
 
-            // Special case for noskill
+            var titles = new Dictionary<string, float> {};
             if (count <= 0) {
+                // Special case for noskill
                 GrammarRequest request = new GrammarRequest();
                 request.Includes .Add     ( RulePackDefOf.AJT_Namer_JobTitle );
                 request.Includes .Add     ( RulePackDefOf.AJT_Namer_JobTitleParts );
                 request.Rules    .AddRange( requestTemplate.Rules );
                 request.Constants.AddRange( requestTemplate.Constants );
-                request.Constants.Add     ( "count", count.ToString() );
+                request.Constants.Add     ( "count", "0" );
 
-                return GrammarResolver.Resolve(
-                    request:     request,
-                    rootKeyword: "r_title",
-                    capitalizeFirstSentence: true
-                );
-            }
-
-            /* The RulesPackDef is capable of a lot of different things, but it cannot set constants as words
-             * are being picked.  Because different adjective/noun permutations are dependent on which skills
-             * were picked, we need something more robust.  For example, if a Medical noun is picked, we don't
-             * want a Medical adjective as well.
-             * 
-             * So, we use this special permutation loop to figure out a bunch of well-formed titles, and then
-             * randomly pick from the list.
-             */
-
-            var titles = new Dictionary<string, float> {};
-            foreach ( IEnumerable<string> skillPermutation in skillList.DifferentPermutations(count) ) {
-                List<string> permSkillList = skillPermutation.ToList();
-
-                // Not only are there different permutations, but there are different points where we can split
-                // between adjectives and nouns.
-                for (int i = 0; i < count; i++) {  // stops just short of the last record, because all adjective doesn't make sense
-                    List<string>  adjSkills = permSkillList.GetRange(0, i);  // can be nothing
-                    List<string> nounSkills = permSkillList.GetRange(i, count - i);
-
-                    Rule_String  adjRule = ResolveJobTitlePart( "adj", requestTemplate,  adjSkills, isExpert);
-                    Rule_String nounRule = ResolveJobTitlePart("noun", requestTemplate, nounSkills, isExpert);
-                    if (nounRule == null) continue;
-
-                    GrammarRequest request = new GrammarRequest();
-                    request.Includes .Add     ( TitleNamerDef );
-                    request.Rules    .AddRange( requestTemplate.Rules );
-                    request.Constants.AddRange( requestTemplate.Constants );
-                    request.Constants.Add     ( "count", count.ToString() );
-
-                    if (adjRule != null) request.Rules.Add(adjRule);
-                    request.Rules.Add(nounRule);
-
+                for (int i = 0; i < 5; i++) {
                     string title = GrammarResolver.Resolve(
                         request:     request,
                         rootKeyword: "r_title",
                         capitalizeFirstSentence: true
                     );
+                    titles.SetOrAdd( title, 1f );  // equal weight
+                }
+            }
+            else {
+                /* The RulesPackDef is capable of a lot of different things, but it cannot set constants as words
+                 * are being picked.  Because different adjective/noun permutations are dependent on which skills
+                 * were picked, we need something more robust.  For example, if a Medical noun is picked, we don't
+                 * want a Medical adjective as well.
+                 *
+                 * So, we use this special permutation loop to figure out a bunch of well-formed titles, and then
+                 * randomly pick from the list.
+                 */
 
-                    // Give more weight to higher skill and more complicated titles
-                    // XXX: We don't actually know if a skill#_noun gave us a #-Skill noun
-                    double weight = 1 + Math.Pow(adjSkills.Count, 1.5) + Math.Pow(nounSkills.Count, 1.75) + (title.Length / 20f);
+                foreach ( IEnumerable<string> skillPermutation in skillList.DifferentPermutations(count) ) {
+                    List<string> permSkillList = skillPermutation.ToList();
 
-                    titles.SetOrAdd( title, (float)weight );
+                    // Not only are there different permutations, but there are different points where we can split
+                    // between adjectives and nouns.
+                    for (int i = 0; i < count; i++) {  // stops just short of the last record, because all adjective doesn't make sense
+                        List<string>  adjSkills = permSkillList.GetRange(0, i);  // can be nothing
+                        List<string> nounSkills = permSkillList.GetRange(i, count - i);
+
+                        Rule_String  adjRule = ResolveJobTitlePart( "adj", requestTemplate,  adjSkills, isExpert);
+                        Rule_String nounRule = ResolveJobTitlePart("noun", requestTemplate, nounSkills, isExpert);
+                        if (nounRule == null) continue;
+
+                        GrammarRequest request = new GrammarRequest();
+                        request.Includes .Add     ( RulePackDefOf.AJT_Namer_JobTitle );
+                        request.Rules    .AddRange( requestTemplate.Rules );
+                        request.Constants.AddRange( requestTemplate.Constants );
+                        request.Constants.Add     ( "count", count.ToString() );
+
+                        if (adjRule != null) request.Rules.Add(adjRule);
+                        request.Rules.Add(nounRule);
+
+                        string title = GrammarResolver.Resolve(
+                            request:     request,
+                            rootKeyword: "r_title",
+                            capitalizeFirstSentence: true
+                        );
+
+                        // Give more weight to higher skill and more complicated titles
+                        // XXX: We don't actually know if a skill#_noun gave us a #-Skill noun
+                        double weight = 1 + Math.Pow(adjSkills.Count, 1.5) + Math.Pow(nounSkills.Count, 1.75) + (title.Length / 20f);
+
+                        titles.SetOrAdd( title, (float)weight );
+                    }
                 }
             }
 
