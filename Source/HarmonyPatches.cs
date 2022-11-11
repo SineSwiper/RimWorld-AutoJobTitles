@@ -31,7 +31,7 @@ namespace AutoJobTitles {
             // similar to the latter half of the original MakeRow
             Rect rect = divider.NewCol(randomizeButtonWidth);
             if (!Widgets.ButtonText(rect, randomizeText)) return;
-
+            
             // if clicked...
             SoundDefOf.Tick_Tiny.PlayOneShotOnCamera();
             ___current = Base.Instance.NewJobTitle(pawn);
