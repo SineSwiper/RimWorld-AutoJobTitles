@@ -1,0 +1,459 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <!--
+        NOTE: If this ever gets translated to another language, please just do wholesale
+        .rulePack.rulesStrings replacements in DefInjected, instead of individual <li> changes.
+        The Core German RulePackDefs illustrate this nicely.
+    -->
+
+    <!-- The root rule pack, used after collecting nouns/adjectives -->
+
+    <RulePackDef>
+        <defName>AJT_Namer_JobTitle</defName>
+        <rulePack>
+            <rulesStrings>
+                <li>r_title(count==0)->[noskill_title]</li>
+                <li>r_title(count==1) ->[skill1_title]</li>
+                <li>r_title(count==2) ->[skill2_title]</li>
+                <li>r_title(count==3) ->[skill3_title]</li>
+                <li>r_title(count==4) ->[skill4_title]</li>
+                <li>r_title(count>=5) ->[skill5_title]</li>
+
+                <li>noskill_title->[noskill_noun]</li>
+
+                <li>skill1_title ->[skill1_noun]</li>
+
+                <li>skill2_title        ->[skill1_adj] [skill1_noun]</li>
+                <li>skill2_title(p=2)   ->[skill2_noun]</li>
+                <li>skill2_title(p=0.01)->[skill1_title]</li>
+
+                <li>skill3_title        ->[skill1_adj] [skill2_noun]</li>
+                <li>skill3_title        ->[skill2_adj] [skill1_noun]</li>
+                <li>skill3_title(p=2)   ->[skill3_noun]</li>
+                <li>skill3_title(p=0.01)->[skill2_title]</li>
+
+                <li>skill4_title        ->[skill1_adj] [skill3_noun]</li>
+                <li>skill4_title        ->[skill2_adj] [skill2_noun]</li>
+                <li>skill4_title        ->[skill3_adj] [skill1_noun]</li>
+                <!-- There are no skill4 anything -->
+                <li>skill4_title(p=0.01)->[skill3_title]</li>
+
+                <!-- rare, but supported -->
+                <li>skill5_title        ->[skill2_adj] [skill3_noun]</li>
+                <li>skill5_title        ->[skill3_adj] [skill2_noun]</li>
+                <li>skill5_title(p=0.01)->[skill4_title]</li>
+            </rulesStrings>
+        </rulePack>
+    </RulePackDef>
+
+    <!-- The nouns/adjectives collector.  All of these are single words or adj/noun combos that have to be bound together. -->
+
+    <RulePackDef>
+        <defName>AJT_Namer_JobTitleParts</defName>
+        <rulePack>
+            <rulesStrings>
+                <!--
+                    NOTE: According to Rule_String.pattern, you can have whitespace before each paramname, and before the ->.
+                    Although, this isn't good enough to keep the vertical alignment clean, so we use fixed-length skill names.
+                -->
+
+                <!--
+                    === Single skill adjectives/nouns ===
+                -->
+
+                <li>skill1_adj(shoot_==1)->[shoot__adj]</li>
+                <li>skill1_adj(melee_==1)->[melee__adj]</li>
+                <li>skill1_adj(constr==1)->[constr_adj]</li>
+                <li>skill1_adj(miner_==1)->[miner__adj]</li>
+                <li>skill1_adj(cook__==1)->[cook___adj]</li>
+                <li>skill1_adj(plants==1)->[plants_adj]</li>
+                <li>skill1_adj(crafts==1)->[crafts_adj]</li>
+                <li>skill1_adj(animal==1)->[animal_adj]</li>
+                <li>skill1_adj(artist==1)->[artist_adj]</li>
+                <li>skill1_adj(medic_==1)->[medic__adj]</li>
+                <li>skill1_adj(social==1)->[social_adj]</li>
+                <li>skill1_adj(intell==1)->[intell_adj]</li>
+
+                <li>skill1_noun(shoot_==1)->[shoot__noun]</li>
+                <li>skill1_noun(melee_==1)->[melee__noun]</li>
+                <li>skill1_noun(constr==1)->[constr_noun]</li>
+                <li>skill1_noun(miner_==1)->[miner__noun]</li>
+                <li>skill1_noun(cook__==1)->[cook___noun]</li>
+                <li>skill1_noun(plants==1)->[plants_noun]</li>
+                <li>skill1_noun(crafts==1)->[crafts_noun]</li>
+                <li>skill1_noun(animal==1)->[animal_noun]</li>
+                <li>skill1_noun(artist==1)->[artist_noun]</li>
+                <li>skill1_noun(medic_==1)->[medic__noun]</li>
+                <li>skill1_noun(social==1)->[social_noun]</li>
+                <li>skill1_noun(intell==1)->[intell_noun]</li>
+
+                <!--
+                    === Double skill adjectives ===
+                -->
+
+                <li>skill2_adj(shoot_==1, melee_==1)->army</li>
+                <li>skill2_adj(shoot_==1, melee_==1)->military</li>
+                <li>skill2_adj(shoot_==1, melee_==1, expert_shoot_==1, expert_melee_==1)->warbringing</li>
+
+                <li>skill2_adj(shoot_==1, animal==1)->hunting</li>
+
+                <li>skill2_adj(shoot_==1, social==1)->peacekeeping</li>
+                <li>skill2_adj(shoot_==1, intell==1)->scouting</li>
+
+                <li>skill2_adj(melee_==1, social==1, expert_social==1)->wardening</li>
+
+                <li>skill2_adj(constr==1, crafts==1)->engineering</li>
+                <li>skill2_adj(constr==1, intell==1, expert_constr==1)->architectural</li>
+
+                <li>skill2_adj(miner_==1, intell==1)->mineralogical</li>
+                <li>skill2_adj(miner_==1, intell==1, expert_miner_==1, expert_intell==1)->speleological</li>
+
+                <li>skill2_adj(cook__==1, plants==1, expert_cook__==0, expert_plants==0)->foraging</li>
+                <li>skill2_adj(cook__==1, intell==1, expert_cook__==1)->dietetic</li>
+                <li>skill2_adj(cook__==1, intell==1, expert_cook__==1, expert_intell==1)->nutritional</li>
+
+                <li>skill2_adj(plants==1, animal==1)->farmerish</li>
+                <li>skill2_adj(plants==1, intell==1)->chemical</li>
+                <li>skill2_adj(plants==1, intell==1, expert_plants==1)->horticultural</li>
+                <li>skill2_adj(plants==1, intell==1, expert_plants==1)->botanical</li>
+                <li>skill2_adj(plants==1, intell==1, expert_plants==1, expert_intell==1)->dendrologic</li>
+                <li>skill2_adj(plants==1, intell==1, expert_plants==1, expert_intell==1)->phytologic</li>
+
+                <li>skill2_adj(plants==1, medic_==1)->herbalistic</li>
+
+                <li>skill2_adj(animal==1, medic_==1)->veterinary</li>
+                <li>skill2_adj(animal==1, medic_==1)->biomedical</li>
+                <li>skill2_adj(animal==1, intell==1)->zoological</li>
+                <li>skill2_adj(animal==1, intell==1, expert_animal==1, expert_intell==1)->ethological</li>
+
+                <li>skill2_adj(crafts==1, intell==1, expert_crafts==1)->technical</li>
+                <li>skill2_adj(crafts==1, intell==1, expert_intell==1)->hackerish</li>
+                <li>skill2_adj(crafts==1, intell==1, expert_crafts==1, expert_intell==1)->experimental</li>
+
+                <li>skill2_adj(artist==1, social==1)->modelling</li>
+
+                <li>skill2_adj(medic_==1, social==1)->clerical</li>
+                <li>skill2_adj(medic_==1, intell==1)->apothecarial</li>
+                <li>skill2_adj(medic_==1, intell==1)->biological</li>
+                <li>skill2_adj(medic_==1, intell==1, expert_intell==1)->pharmaceutical</li>
+                <li>skill2_adj(medic_==1, intell==1, expert_medic_==1)->immunologic</li>
+                <li>skill2_adj(medic_==1, intell==1, expert_medic_==1, expert_intell==1)->xenobiological</li>
+
+                <li>skill2_adj(social==1, intell==1)->teaching</li>
+                <li>skill2_adj(social==1, intell==1)->reporting</li>
+                <li>skill2_adj(social==1, intell==1, expert_social==1)->diplomatic</li>
+                <li>skill2_adj(social==1, intell==1, expert_intell==1)->historical</li>
+                <li>skill2_adj(social==1, intell==1, expert_social==1, expert_intell==1)->professorly</li>
+
+                <!--
+                    === Double skill nouns ===
+                -->
+
+                <li>skill2_noun(shoot_==1, melee_==1)->soldier</li>
+                <li>skill2_noun(shoot_==1, melee_==1)->marine</li>
+                <li>skill2_noun(shoot_==1, melee_==1)->sentry</li>
+                <li>skill2_noun(shoot_==1, melee_==1)->watch[pawn_person]</li>
+                <li>skill2_noun(shoot_==1, melee_==1, expert_shoot_==1)->sentinel</li>
+                <li>skill2_noun(shoot_==1, melee_==1, expert_shoot_==1, expert_melee_==1)->veteran</li>
+                <li>skill2_noun(shoot_==1, melee_==1, expert_shoot_==1, expert_melee_==1)->commando</li>
+                <li>skill2_noun(shoot_==1, melee_==1, expert_shoot_==1, expert_melee_==1)->vanguard</li>
+                <li>skill2_noun(shoot_==1, melee_==1, expert_shoot_==1, expert_melee_==1)->war[pawn_master]</li>
+
+                <li>skill2_noun(shoot_==1, animal==1, PAWN_gender==Male  )->hunter</li>
+                <li>skill2_noun(shoot_==1, animal==1, PAWN_gender==Female)->huntress</li>
+                <li>skill2_noun(shoot_==1, animal==1)->hunts[pawn_person]</li>
+                <li>skill2_noun(shoot_==1, animal==1)->cow[pawn_kid]</li>
+                <li>skill2_noun(shoot_==1, animal==1, expert_shoot_==1)->deerstalker</li>
+                <li>skill2_noun(shoot_==1, animal==1, expert_shoot_==1, expert_animal==1, PAWN_gender==Male  )->big game hunter</li>
+                <li>skill2_noun(shoot_==1, animal==1, expert_shoot_==1, expert_animal==1, PAWN_gender==Female)->big game huntress</li>
+                <li>skill2_noun(shoot_==1, crafts==1)->gunsmith</li>
+                <li>skill2_noun(shoot_==1, social==1)->peacekeeper</li>
+                <li>skill2_noun(shoot_==1, intell==1)->scout</li>
+                <li>skill2_noun(shoot_==1, intell==1, expert_shoot==1)->ballistics expert</li>
+
+                <li>skill2_noun(melee_==1, crafts==1)->armorsmith</li>
+                <li>skill2_noun(melee_==1, crafts==1)->swordsmith</li>
+                <li>skill2_noun(melee_==1, crafts==1)->weaponsmith</li>
+                <li>skill2_noun(melee_==1, animal==1, expert_melee_==1, expert_animal==1)->beast[pawn_master]</li>
+                <li>skill2_noun(melee_==1, social==1)->task[pawn_master]</li>
+                <li>skill2_noun(melee_==1, social==1, expert_social==0)->jailor</li>
+                <li>skill2_noun(melee_==1, social==1, expert_social==1)->warden</li>
+                <li>skill2_noun(melee_==1, intell==1)->bodyguard</li>
+                <li>skill2_noun(melee_==1, intell==1, expert_melee_==1, expert_intell==1)->mercenary</li>
+                <li>skill2_noun(melee_==1, intell==1, expert_melee_==1, expert_intell==1)->assassin</li>
+                <li>skill2_noun(melee_==1, intell==1, expert_melee_==1, expert_intell==1)->ninja</li>
+
+                <li>skill2_noun(constr==1, crafts==1)->engineer</li>
+                <li>skill2_noun(constr==1, intell==1, expert_constr==1)->architect</li>
+
+                <li>skill2_noun(miner_==1, plants==1)->mushroom [plants_noun]</li>
+                <li>skill2_noun(miner_==1, intell==1)->mineralogist</li>
+                <li>skill2_noun(miner_==1, intell==1, expert_miner_==1, expert_intell==1)->speleologist</li>
+
+                <li>skill2_noun(cook__==1, plants==1)->vegan [cook___noun]</li>
+                <li>skill2_noun(cook__==1, plants==1, expert_cook__==0, expert_plants==0)->forager</li>
+                <li>skill2_noun(cook__==1, plants==1, expert_cook__==1, expert_plants==1)->brew[pawn_master]</li>
+                <li>skill2_noun(cook__==1, animal==1)->butcher</li>
+                <li>skill2_noun(cook__==1, intell==1, expert_cook__==1)->dietitian</li>
+                <li>skill2_noun(cook__==1, intell==1, expert_cook__==1, expert_intell==1)->nutritionist</li>
+
+                <li>skill2_noun(plants==1, animal==1)->farmer</li>
+                <li>skill2_noun(plants==1, medic_==1)->medicine [pawn_person]</li>
+                <li>skill2_noun(plants==1, intell==1)->chemist</li>
+                <li>skill2_noun(plants==1, intell==1, expert_plants==1)->horticulturist</li>
+                <li>skill2_noun(plants==1, intell==1, expert_plants==1)->botanist</li>
+                <li>skill2_noun(plants==1, intell==1, expert_plants==1, expert_intell==1)->dendrologist</li>
+                <li>skill2_noun(plants==1, intell==1, expert_plants==1, expert_intell==1)->phytologist</li>
+
+                <li>skill2_noun(animal==1, medic_==1, p=2)->veterinarian</li>
+                <li>skill2_noun(animal==1, intell==1)->zoologist</li>
+                <li>skill2_noun(animal==1, intell==1, expert_animal==1, expert_intell==1)->ethologist</li>
+
+                <li>skill2_noun(crafts==1, artist==1, expert_crafts==1)->outfitter</li>
+
+                <li>skill2_noun(crafts==1, intell==1)->electronics [crafts_noun]</li>
+                <li>skill2_noun(crafts==1, intell==1, expert_crafts==1)->technician</li>
+                <li>skill2_noun(crafts==1, intell==1, expert_intell==1)->hacker</li>
+                <li>skill2_noun(crafts==1, intell==1, expert_crafts==1, expert_intell==1)->experimenter</li>
+
+                <li>skill2_noun(artist==1, social==1)->minstrel</li>
+                <li>skill2_noun(artist==1, social==1)->model</li>
+
+                <li>skill2_noun(medic_==1, social==1)->cleric</li>
+                <li>skill2_noun(medic_==1, intell==1)->apothecary</li>
+                <li>skill2_noun(medic_==1, intell==1)->biologist</li>
+                <li>skill2_noun(medic_==1, intell==1, expert_intell==1)->pharmacist</li>
+                <li>skill2_noun(medic_==1, intell==1, expert_medic_==1)->immunologist</li>
+                <li>skill2_noun(medic_==1, intell==1, expert_medic_==1, expert_intell==1)->xenobiologist</li>
+
+                <li>skill2_noun(social==1, intell==1)->teacher</li>
+                <li>skill2_noun(social==1, intell==1)->reporter</li>
+                <li>skill2_noun(social==1, intell==1, expert_social==1)->diplomat</li>
+                <li>skill2_noun(social==1, intell==1, expert_intell==1)->historian</li>
+                <li>skill2_noun(social==1, intell==1, expert_social==1, expert_intell==1)->professor</li>
+                <li>skill2_noun(social==1, intell==1, expert_social==1, expert_intell==1)->sensei</li>
+
+                <!-- if all else fails... -->
+
+                <li>skill2_adj(p=0.01) ->[skill1_adj]</li>
+                <li>skill2_noun(p=0.01)->[skill1_noun]</li>
+
+                <!--
+                    === Triple skill adjectives ===
+                -->
+
+                <li>skill3_adj(shoot_==1, melee_==1, social==1, expert_shoot==1, expert_social==1)->commanding</li>
+                <li>skill3_adj(melee_==1, cook__==1, social==1)->bartending</li>
+
+                <li>skill3_adj(constr==1, crafts==1, intell==1, expert_constr==1, expert_crafts==1, expert_intell==1)->artificing</li>
+
+                <li>skill3_adj(cook__==1, plants==1, animal==1)->naturalistic</li>
+                <li>skill3_adj(cook__==1, plants==1, intell==1, expert_cook__==1, expert_plants==1, expert_intell==1)->alchemical</li>
+
+                <li>skill3_adj(plants==1, animal==1, intell==1)->conservatorial</li>
+                <li>skill3_adj(plants==1, animal==1, intell==1)->environmental</li>
+
+                <li>skill3_adj(animal==1, medic_==1, intell==1, expert_animal==1, expert_medic_==1, expert_intell==1)->archaeozoological</li>
+
+                <li>skill3_adj(melee_==1, social==1, intell==1)->coaching</li>
+
+                <li>skill3_adj(melee_==1, medic_==1, intell==1, expert_medic_==1, expert_intell==1)->toxicological</li>
+                <li>skill3_adj(melee_==1, medic_==1, intell==1, expert_melee_==1, expert_medic_==1, expert_intell==1)->algological</li>
+                <li>skill3_adj(melee_==1, medic_==1, intell==1, expert_melee_==1, expert_medic_==1, expert_intell==1)->hematological</li>
+
+                <li>skill3_adj(plants==1, animal==1, medic_==1, expert_plants==1, expert_animal==1, expert_medic_==1)->omnibiological</li>
+                <li>skill3_adj(plants==1, medic_==1, intell==1, expert_plants==1, expert_intell==1)->herbological</li>
+
+                <!--
+                    === Triple skill nouns ===
+                -->
+
+                <li>skill3_noun(shoot_==1, melee_==1, social==1)->corporal</li>
+                <li>skill3_noun(shoot_==1, melee_==1, social==1)->sergeant</li>
+                <li>skill3_noun(shoot_==1, melee_==1, social==1, expert_shoot==1)->sergeant major</li>
+                <li>skill3_noun(shoot_==1, melee_==1, social==1, expert_shoot==1)->lieutenant</li>
+                <li>skill3_noun(shoot_==1, melee_==1, social==1, expert_shoot==1, expert_social==1)->commander</li>
+                <li>skill3_noun(shoot_==1, melee_==1, social==1, expert_shoot==1, expert_social==1)->captian</li>
+                <li>skill3_noun(shoot_==1, melee_==1, social==1, expert_shoot==1, expert_social==1)->major</li>
+                <li>skill3_noun(shoot_==1, melee_==1, social==1, expert_shoot==1, expert_melee_==1, expert_social==1)->lt. colonel</li>
+                <li>skill3_noun(shoot_==1, melee_==1, social==1, expert_shoot==1, expert_melee_==1, expert_social==1)->colonel</li>
+                <li>skill3_noun(shoot_==1, melee_==1, social==1, expert_shoot==1, expert_melee_==1, expert_social==1)->brigadier</li>
+                <li>skill3_noun(shoot_==1, melee_==1, social==1, expert_shoot==1, expert_melee_==1, expert_social==1)->brigadier general</li>
+                <li>skill3_noun(shoot_==1, melee_==1, social==1, expert_shoot==1, expert_melee_==1, expert_social==1)->major general</li>
+                <li>skill3_noun(shoot_==1, melee_==1, social==1, expert_shoot==1, expert_melee_==1, expert_social==1)->lt. general</li>
+                <li>skill3_noun(shoot_==1, melee_==1, social==1, expert_shoot==1, expert_melee_==1, expert_social==1)->general</li>
+                <li>skill3_noun(shoot_==1, melee_==1, social==1, expert_shoot==1, expert_melee_==1, expert_social==1)->army general</li>
+
+                <li>skill3_noun(shoot_==1, constr==1, animal==1)->trapper</li>
+                <li>skill3_noun(shoot_==1, cook__==1, animal==1)->outdoors[pawn_person]</li>
+                <li>skill3_noun(shoot_==1, cook__==1, plants==1)->ranger</li>
+
+                <li>skill3_noun(melee_==1, cook__==1, social==1)->bartender</li>
+
+                <li>skill3_noun(constr==1, crafts==1, artist==1)->handy[pawn_person]</li>
+                <li>skill3_noun(constr==1, crafts==1, intell==1, expert_constr==1, expert_crafts==1, expert_intell==1)->artificer</li>
+
+                <li>skill3_noun(cook__==1, plants==1, animal==1)->naturalist</li>
+                <li>skill3_noun(cook__==1, plants==1, intell==1, expert_cook__==1, expert_plants==1, expert_intell==1)->alchemist</li>
+                <li>skill3_noun(cook__==1, crafts==1, medic_==1)->housemate</li>
+
+                <li>skill3_noun(plants==1, animal==1, intell==1)->conservationist</li>
+                <li>skill3_noun(plants==1, animal==1, intell==1)->environmentalist</li>
+
+                <li>skill3_noun(animal==1, medic_==1, intell==1, expert_animal==1, expert_medic_==1, expert_intell==1)->archaeozoologist</li>
+
+                <li>skill3_noun(artist==1, social==1, intell==1, PAWN_gender==Male)->actor</li>
+                <li>skill3_noun(artist==1, social==1, intell==1, PAWN_gender==Female)->actress</li>
+
+                <li>skill3_noun(melee_==1, social==1, intell==1)->coach</li>
+
+                <li>skill3_noun(melee_==1, medic_==1, intell==1, expert_medic_==1, expert_intell==1)->toxicologist</li>
+                <li>skill3_noun(melee_==1, medic_==1, intell==1, expert_melee_==1, expert_medic_==1, expert_intell==1)->algologist</li>
+                <li>skill3_noun(melee_==1, medic_==1, intell==1, expert_melee_==1, expert_medic_==1, expert_intell==1)->hematologist</li>
+
+                <li>skill3_noun(plants==1, animal==1, medic_==1, expert_plants==1, expert_animal==1, expert_medic_==1)->omnibiologist</li>
+                <li>skill3_noun(plants==1, medic_==1, intell==1, expert_plants==1, expert_intell==1)->herbologist</li>
+
+                <li>skill3_noun(animal==1, medic_==1, shoot_==1)->[shoot__adj] vet</li>
+                <li>skill3_noun(animal==1, medic_==1, melee_==1)->[melee__adj] vet</li>
+                <li>skill3_noun(animal==1, medic_==1, constr==1)->[constr_adj] vet</li>
+                <li>skill3_noun(animal==1, medic_==1, miner_==1)->[miner__adj] vet</li>
+                <li>skill3_noun(animal==1, medic_==1, cook__==1)->[cook___adj] vet</li>
+                <li>skill3_noun(animal==1, medic_==1, plants==1)->[plants_adj] vet</li>
+                <li>skill3_noun(animal==1, medic_==1, crafts==1)->[crafts_adj] vet</li>
+                <li>skill3_noun(animal==1, medic_==1, artist==1)->[artist_adj] vet</li>
+                <li>skill3_noun(animal==1, medic_==1, social==1)->[social_adj] vet</li>
+                <li>skill3_noun(animal==1, medic_==1, intell==1)->[intell_adj] vet</li>
+
+                <!-- if all else fails... -->
+
+                <li>skill3_adj(p=0.01) ->[skill2_adj]</li>
+                <li>skill3_noun(p=0.01)->[skill2_noun]</li>
+
+                <!--
+                    === Basic adjectives ===
+                -->
+
+                <li>shoot__adj->[base_shoot__adj]</li>
+                <li>melee__adj->[base_melee__adj]</li>
+                <li>constr_adj->[base_constr_adj]</li>
+                <li>miner__adj->[base_miner__adj]</li>
+
+                <li>cook___adj->[base_cook___adj]</li>
+                <li>cook___adj(expert_cook__==0)->hungry</li>
+
+                <li>plants_adj->[base_plants_adj]</li>
+                <li>crafts_adj->[base_crafts_adj]</li>
+                <li>animal_adj->[base_animal_adj]</li>
+                <li>artist_adj->[base_artist_adj]</li>
+                <li>medic__adj->[base_medic__adj]</li>
+                <li>social_adj->[base_social_adj]</li>
+                <li>intell_adj->[base_intell_adj]</li>
+
+                <!--
+                    === Basic/Expert noun pickers ===
+                -->
+
+                <li>noskill_noun->[basic_noskill_noun]</li>
+                <li>noskill_noun(PAWN_gender==Female)      ->maid</li>
+                <li>noskill_noun(PAWN_gender==Male,  p=0.5)->footman</li>
+
+                <li>shoot__noun(expert_shoot_==0)->[basic_shoot__noun]</li>
+                <li>shoot__noun(expert_shoot_==0)->rifle[pawn_person]</li>
+
+                <li>melee__noun(expert_melee_==0)->[basic_melee__noun]</li>
+
+                <li>constr_noun(expert_constr==0)->[basic_constr_noun]</li>
+                <li>constr_noun(expert_constr==0)->fore[pawn_person]</li>
+
+                <li>miner__noun(expert_miner_==0)->[basic_miner__noun]</li>
+                <li>cook___noun(expert_cook__==0)->[basic_cook___noun]</li>
+                <li>plants_noun(expert_plants==0)->[basic_plants_noun]</li>
+                <li>crafts_noun(expert_crafts==0)->[basic_crafts_noun]</li>
+                <li>animal_noun(expert_animal==0)->[basic_animal_noun]</li>
+                <li>artist_noun(expert_artist==0)->[basic_artist_noun]</li>
+                <li>medic__noun(expert_medic_==0)->[basic_medic__noun]</li>
+
+                <li>social_noun(expert_social==0)->[basic_social_noun]</li>
+                <li>social_noun(expert_social==0)->trades[pawn_person]</li>
+
+                <li>intell_noun(expert_intell==0)->[basic_intell_noun]</li>
+
+                <li>shoot__noun(expert_shoot_==1)->[expert_shoot__noun]</li>
+                <li>shoot__noun(expert_shoot_==1)->marks[pawn_person]</li>
+
+                <li>melee__noun(expert_melee_==1)->[expert_melee__noun]</li>
+                <li>melee__noun(expert_melee_==1)->swords[pawn_person]</li>
+
+                <li>constr_noun(expert_constr==1)->[expert_constr_noun]</li>
+                <li>miner__noun(expert_miner_==1)->[expert_miner__noun]</li>
+                <li>cook___noun(expert_cook__==1)->[expert_cook___noun]</li>
+                <li>plants_noun(expert_plants==1)->[expert_plants_noun]</li>
+                <li>crafts_noun(expert_crafts==1)->[expert_crafts_noun]</li>
+
+                <li>animal_noun(expert_animal==1)->[expert_animal_noun]</li>
+                <li>animal_noun(expert_animal==1)->stable[pawn_master]</li>
+
+                <li>artist_noun(expert_artist==1)->[expert_artist_noun]</li>
+                <li>medic__noun(expert_medic_==1)->[expert_medic__noun]</li>
+                <li>social_noun(expert_social==1)->[expert_social_noun]</li>
+                <li>intell_noun(expert_intell==1)->[expert_intell_noun]</li>
+
+                <li>pawn_kid(PAWN_gender==Male)  ->boy</li>
+                <li>pawn_kid(PAWN_gender==Female)->girl</li>
+                <li>pawn_kid(PAWN_gender==None)  ->kid</li>
+
+                <li>pawn_person(PAWN_gender==Male)  ->man</li>
+                <li>pawn_person(PAWN_gender==Female)->woman</li>
+                <li>pawn_person(PAWN_gender==None)  ->person</li>
+
+                <li>pawn_master(PAWN_gender==Male)  ->master</li>
+                <li>pawn_master(PAWN_gender==Female)->mistress</li>
+                <li>pawn_master(PAWN_gender==None)  ->master</li>
+            </rulesStrings>
+            <rulesFiles>
+                <li>basic_noskill_noun->JobTitles/Nouns/NoSkill</li>
+
+                <li>basic_shoot__noun->JobTitles/Nouns/Shooting</li>
+                <li>basic_melee__noun->JobTitles/Nouns/Melee</li>
+                <li>basic_constr_noun->JobTitles/Nouns/Construction</li>
+                <li>basic_miner__noun->JobTitles/Nouns/Mining</li>
+                <li>basic_cook___noun->JobTitles/Nouns/Cooking</li>
+                <li>basic_plants_noun->JobTitles/Nouns/Plants</li>
+                <li>basic_crafts_noun->JobTitles/Nouns/Crafting</li>
+                <li>basic_animal_noun->JobTitles/Nouns/Animals</li>
+                <li>basic_artist_noun->JobTitles/Nouns/Artistic</li>
+                <li>basic_medic__noun->JobTitles/Nouns/Medical</li>
+                <li>basic_social_noun->JobTitles/Nouns/Social</li>
+                <li>basic_intell_noun->JobTitles/Nouns/Intellect</li>
+
+                <li>expert_shoot__noun->JobTitles/Nouns/ShootingHigh</li>
+                <li>expert_melee__noun->JobTitles/Nouns/MeleeHigh</li>
+                <li>expert_constr_noun->JobTitles/Nouns/ConstructionHigh</li>
+                <li>expert_miner__noun->JobTitles/Nouns/MiningHigh</li>
+                <li>expert_cook___noun->JobTitles/Nouns/CookingHigh</li>
+                <li>expert_plants_noun->JobTitles/Nouns/PlantsHigh</li>
+                <li>expert_crafts_noun->JobTitles/Nouns/CraftingHigh</li>
+                <li>expert_animal_noun->JobTitles/Nouns/AnimalsHigh</li>
+                <li>expert_artist_noun->JobTitles/Nouns/ArtisticHigh</li>
+                <li>expert_medic__noun->JobTitles/Nouns/MedicalHigh</li>
+                <li>expert_social_noun->JobTitles/Nouns/SocialHigh</li>
+                <li>expert_intell_noun->JobTitles/Nouns/IntellectHigh</li>
+
+                <li>base_shoot__adj->JobTitles/Adjectives/Shooting</li>
+                <li>base_melee__adj->JobTitles/Adjectives/Melee</li>
+                <li>base_constr_adj->JobTitles/Adjectives/Construction</li>
+                <li>base_miner__adj->JobTitles/Adjectives/Mining</li>
+                <li>base_cook___adj->JobTitles/Adjectives/Cooking</li>
+                <li>base_plants_adj->JobTitles/Adjectives/Plants</li>
+                <li>base_crafts_adj->JobTitles/Adjectives/Crafting</li>
+                <li>base_animal_adj->JobTitles/Adjectives/Animals</li>
+                <li>base_artist_adj->JobTitles/Adjectives/Artistic</li>
+                <li>base_medic__adj->JobTitles/Adjectives/Medical</li>
+                <li>base_social_adj->JobTitles/Adjectives/Social</li>
+                <li>base_intell_adj->JobTitles/Adjectives/Intellect</li>
+            </rulesFiles>
+        </rulePack>
+    </RulePackDef>
+</Defs>
