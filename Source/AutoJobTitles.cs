@@ -117,7 +117,8 @@ namespace AutoJobTitles {
                         settingName:  sName,
                         title:        ("AJT_" + sName + "_Title").Translate(),
                         description:  ("AJT_" + sName + "_Description").Translate(),
-                        defaultValue: ChangeJobTitlePriority.Low
+                        defaultValue: ChangeJobTitlePriority.Low,
+                        enumPrefix:   "AJT_ChangeJobTitlePriority_"
                     );
                     config[sName].CustomDrawer = rect => {
                         return DrawUtility.CustomDrawer_Slider(

@@ -19,6 +19,11 @@
     <AJT_ChangeJobTitlePriority_Title>Change job title priority</AJT_ChangeJobTitlePriority_Title>
     <AJT_ChangeJobTitlePriority_Description>The priority in which pawns will think of a new job title.</AJT_ChangeJobTitlePriority_Description>
 
+    <AJT_ChangeJobTitlePriority_Top>Top</AJT_ChangeJobTitlePriority_Top>
+    <AJT_ChangeJobTitlePriority_High>High</AJT_ChangeJobTitlePriority_High>
+    <AJT_ChangeJobTitlePriority_Medium>Medium</AJT_ChangeJobTitlePriority_Medium>
+    <AJT_ChangeJobTitlePriority_Low>Low</AJT_ChangeJobTitlePriority_Low>
+
     <!-- Job -->
     <AJT_PawnGainsTitle>{0} was missing a job title for this colony, so {PAWN_pronoun} thought up a new one. {PAWN_possessive} title is now {PAWN_title}.</AJT_PawnGainsTitle>
 </LanguageData>
