@@ -26,7 +26,7 @@ namespace AutoJobTitles {
             string ___textboxName,
             ref string ___current
         ) {
-            if (___textboxName != "Title") return;
+            if (___textboxName != "BackstoryTitle") return;
 
             // similar to the latter half of the original MakeRow
             Rect rect = divider.NewCol(randomizeButtonWidth);
