@@ -18,7 +18,7 @@ namespace AutoJobTitles {
     }
 
     public class ThinkNode_ConditionalWantsTitleChange : ThinkNode_Conditional {
-        protected override bool Satisfied (Pawn pawn) => pawn.IsFreeNonSlaveColonist && pawn.story != null && pawn.story.title.NullOrEmpty();
+        protected override bool Satisfied (Pawn pawn) => pawn.IsFreeNonSlaveColonist && pawn.ageTracker != null && pawn.ageTracker.Adult && pawn.story != null && pawn.story.title.NullOrEmpty();
     }
 
     public class JobGiver_ChangeJobTitle : ThinkNode_JobGiver {
